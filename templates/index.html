@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video Summarizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+        }
+        #error {
+            color: red;
+            display: none;
+        }
+        #loading {
+            display: none;
+            color: #666;
+        }
+        #summary {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+            white-space: pre-wrap;
+        }
+        .stats {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube Video Summarizer</h1>
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="Enter YouTube video URL">
+            <button onclick="summarizeVideo()" id="summarizeBtn">Summarize</button>
+        </div>
+        <div id="error"></div>
+        <div id="loading">Generating summary...</div>
+        <div id="summary"></div>
+    </div>
+
+    <script>
+        function getYouTubeVideoId(url) {
+            try {
+                const urlObj = new URL(url);
+                if (urlObj.hostname.includes('youtube.com')) {
+                    return urlObj.searchParams.get('v');
+                } else if (urlObj.hostname.includes('youtu.be')) {
+                    return urlObj.pathname.slice(1);
+                }
+            } catch (error) {
+                console.error('URL parsing error:', error);
+            }
+            return null;
+        }
+
+        function showError(message) {
+            document.getElementById('error').textContent = message;
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('summary').style.display = 'none';
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('summarizeBtn').disabled = true;
+        }
+
+        function showSummary(data) {
+            const summaryDiv = document.getElementById('summary');
+            summaryDiv.innerHTML = `
+                <div>${data.summary}</div>
+                <div class="stats">
+                    Original length: ${data.original_length} words<br>
+                    Summary length: ${data.summary_length} words
+                </div>
+            `;
+            summaryDiv.style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('summarizeBtn').disabled = false;
+        }
+
+        async function summarizeVideo() {
+            const videoUrl = document.getElementById('videoUrl').value;
+            const videoId = getYouTubeVideoId(videoUrl);
+
+            if (!videoId) {
+                showError('Invalid YouTube URL');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch('http://localhost:5001/summarize-youtube', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ video_id: videoId })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showSummary(data);
+                }
+            } catch (error) {
+                showError(`Error: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html> 

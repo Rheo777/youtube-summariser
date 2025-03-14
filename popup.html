@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Summarizer</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    #summary {
+      margin-top: 10px;
+      white-space: pre-wrap;
+      display: none;
+    }
+    #loading {
+      display: none;
+      color: blue;
+    }
+    #error {
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h3>Video Summarizer</h3>
+  <div id="loading">Getting summary...</div>
+  <div id="error"></div>
+  <div id="summary"></div>
+  <script src="popup.js"></script>
+</body>
+</html> 

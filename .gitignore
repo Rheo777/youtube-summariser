@@ -1,0 +1,48 @@
+# Python virtual environment
+venv/
+env/
+ENV/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+app.log
+
+# Model files and large data
+*.pth
+*.pt
+*.bin
+config/
+tokenizer/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Flask specific
+instance/
+.webassets-cache
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/ 

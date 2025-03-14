@@ -1,0 +1,6 @@
+flask>=2.0.1
+flask-cors>=3.0.10
+torch>=2.0.1
+transformers>=4.30.2
+sentencepiece>=0.1.99
+youtube-transcript-api>=0.6.0 
