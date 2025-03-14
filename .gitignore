@@ -31,8 +31,6 @@ app.log
 *.pth
 *.pt
 *.bin
-config/
-tokenizer/
 
 # OS specific
 .DS_Store
